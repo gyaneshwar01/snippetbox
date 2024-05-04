@@ -3,11 +3,12 @@ package main
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/gyaneshwar01/snippetbox/internal/models"
 	"github.com/gyaneshwar01/snippetbox/internal/validator"
 	"github.com/julienschmidt/httprouter"
-	"net/http"
-	"strconv"
 )
 
 type snippetCreateForm struct {
@@ -88,6 +89,8 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 		app.serverError(w, err)
 		return
 	}
+
+	app.sessionManager.Put(r.Context(), "flash", "Snippet created successfully!")
 
 	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
 }
